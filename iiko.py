@@ -3,11 +3,19 @@ from lxml import etree
 from io import StringIO
 import lxml.html
 
+_HTTP = "http://"
+_HTTPS = "https://"
+
 
 def get_info(server):
     try:
-        req = requests.get('https://' + server + "/resto/get_server_info.jsp?encoding=UTF-8").text
-        req2 = requests.get('https://' + server + "/resto/service/evoservices/testConnection.jsp").text
+        if requests.get(_HTTPS + server).status_code == 200:
+            protocol = 'https://'
+        else:
+            protocol = 'http://'
+
+        req = requests.get(protocol + server + "/resto/get_server_info.jsp?encoding=UTF-8").text
+        req2 = requests.get(protocol + server + "/resto/service/evoservices/testConnection.jsp").text
         tree = etree.parse(StringIO(req))
         tree2 = lxml.html.fromstring(req2)
 
