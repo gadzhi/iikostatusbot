@@ -9,13 +9,13 @@ _HTTPS = "https://"
 
 def get_info(server):
     try:
-        if requests.get(_HTTPS + server).status_code == 200:
-            protocol = 'https://'
-        else:
+        if requests.get(_HTTP + server, timeout=4).status_code == 200:
             protocol = 'http://'
+        else:
+            protocol = 'https://'
 
-        req = requests.get(protocol + server + "/resto/get_server_info.jsp?encoding=UTF-8").text
-        req2 = requests.get(protocol + server + "/resto/service/evoservices/testConnection.jsp").text
+        req = requests.get(protocol + server + "/resto/get_server_info.jsp?encoding=UTF-8", timeout=4).text
+        req2 = requests.get(protocol + server + "/resto/service/evoservices/testConnection.jsp", timeout=4).text
         tree = etree.parse(StringIO(req))
         tree2 = lxml.html.fromstring(req2)
 
@@ -34,10 +34,3 @@ def get_info(server):
         return "Wrong url server"
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         raise SystemExit(e)
-
-
-
-
-
-
-
